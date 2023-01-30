@@ -20,6 +20,8 @@
 /// line by line and saves surnames ("Braund; Mr. Owen Harris" will be just
 /// "Braund") of survived people from input.csv (Survived column).
 /// The function returns data of type VecStrings -- vector of surnames of survivors.
+
+
 ///
 /// Use intermediate functions in exercise 2 to do the following:
 /// 2.1) Extract data (surname and whether the person survived or not) from one line of input.
@@ -91,14 +93,101 @@
 #include <random>
 #include <algorithm>
 
+// typedef std::vector<std::string> VecString;
+
+using VecString = std::vector<std::string>;
+
+std::istream& calcSumFromStream(std::istream& in, double& sum)
+{
+    std::string buffer;
+    std::getline(in, buffer);
+
+    std::stringstream sstr(buffer);
+    double number;
+    sum = 0;
+    while (sstr >> number) // 1 2 5
+    {
+        sum += number;
+    }
+    return in;
+}
+
+std::istream& extractDataFromLine(std::istream& in, std::string& lastName, bool& survived)
+{
+    std::string buffer;
+    std::getline(in, buffer);
+    if (!in)
+    {
+        return in;
+    }
+
+    std::stringstream sstr(buffer);
+
+    // PassengerId
+    std::getline(sstr, buffer, ',');
+
+    // Survived
+    std::getline(sstr, buffer, ',');
+    survived = bool(std::stoi(buffer));
+    // survived = buffer == "1";
+
+    // if (buffer == "1")
+    // {
+    //     survived = true;
+    // }
+    // else if (buffer == "0")
+    // {
+    //     survived = false;
+    // }
+    // else
+    // {
+    //     // error
+    //     // exception
+    //     // return error
+    // }
+
+
+    // Pclass
+    std::getline(sstr, buffer, ',');
+
+    // Name
+    std::getline(sstr, buffer, ',');
+
+
+    int semicolonIndex = buffer.find(";");
+    lastName = buffer.substr(0, semicolonIndex);
+    // "Braund; Mr. Owen Harris"
+    // "Braund"
+    
+    // Sex
+    
+    //Age
+    return in;
+}
+
+VecString getSurvivorSurnames(std::istream& in)
+{
+    std::string lastName;
+    bool survived;
+    VecString surnames;
+    std::getline(in, lastName);
+    while(extractDataFromLine(in, lastName, survived))
+    {
+        if (survived)
+        {
+            surnames.push_back(lastName);
+        }
+    }
+    return surnames;
+}
 
 
 int main()
 {
-    const std::string INP_FILE_NAME = "../../data/titanic/titanic.csv";
+    const std::string INP_FILE_NAME = "../data/titanic/titanic.csv";
     std::ifstream inputFile;
     inputFile.open(INP_FILE_NAME);
-//    VecString surnames = getSurvivorSurnames(inputFile);
+    VecString surnames = getSurvivorSurnames(inputFile);
     inputFile.close();
     
     // other functions here
