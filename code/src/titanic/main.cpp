@@ -36,7 +36,7 @@
 ///     2) Name_2
 ///     ...
 ///     N) Name_n
-/// 
+/// s
 /// 3.1) (Optional homework) Try adding templates to the function, so it can print a vector
 /// of any printable type, not just a vector of strings.
 ///
@@ -91,14 +91,89 @@
 #include <random>
 #include <algorithm>
 
+typedef std::vector<std::string> VecString;
+
+using VecString = std::vector<std::string>;
+
+std::istream& calcSumFromStream(std::istream& in, double& sum)
+{
+// floating point numbers from it
+// until the end of line
+    double number;
+    std::string buffer;
+    std::getline(in, buffer);
+    
+    sum = 0;
+    std::stringstream sstr(buffer);
+    while (sstr >> number)
+    {
+        sum += number;
+    }
+    return in;
+}
+
+
+std::istream& readInputLine(std::istream& in, std::string& lastName, bool& survived)
+{
+    std::string buffer;
+    std::getline(in, buffer);
+
+    if (!in)
+    {
+        return in;
+    }
+    
+    std::stringstream sstr(buffer);
+
+    // PassengerID
+    std::getline(sstr, buffer, ',');
+
+    // Survived
+    std::getline(sstr, buffer, ',');
+    survived = bool(std::stoi(buffer));
+
+    // Pclass
+    std::getline(sstr, buffer, ',');
+
+    // Name
+    std::getline(sstr, buffer, ',');
+
+    // "Braund; Mr. Owen Harris" - > Braund
+    int semicolonIndex = buffer.find(";");
+    lastName = buffer.substr(0, semicolonIndex);
+    // lastName = extractLastName(buffer);
+
+    // Sex
+    // Age
+    // SibSp
+    return in;
+}
+
+VecString getSurvivorSurnames(std::istream& in)
+{
+    std::string buffer;
+
+    std::getline(in, buffer);
+    bool survived;
+    std::string lastName;
+    VecString survivorNames;
+    while (readInputLine(in, lastName, survived))
+    {
+        if (survived)
+        {
+            survivorNames.push_back(lastName);
+        }
+    }
+    return survivorNames;
+}
 
 
 int main()
 {
-    const std::string INP_FILE_NAME = "../../data/titanic/titanic.csv";
+    const std::string INP_FILE_NAME = "../data/titanic/titanic.csv";
     std::ifstream inputFile;
     inputFile.open(INP_FILE_NAME);
-//    VecString surnames = getSurvivorSurnames(inputFile);
+    VecString surnames = getSurvivorSurnames(inputFile);
     inputFile.close();
     
     // other functions here
