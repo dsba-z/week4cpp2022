@@ -92,14 +92,71 @@
 #include <algorithm>
 
 
+typedef std::vector<std::string> VecStrings;
+// using VecStrings = std::vector<std::string>;
+
+VecStrings getSurvivorSurnames(std::istream& stream);
+
 
 int main()
 {
-    const std::string INP_FILE_NAME = "../../data/titanic/titanic.csv";
+    const std::string INP_FILE_NAME = "../../../data/titanic/titanic.csv";
     std::ifstream inputFile;
     inputFile.open(INP_FILE_NAME);
-//    VecString surnames = getSurvivorSurnames(inputFile);
+
+
+    VecStrings surnames = getSurvivorSurnames(inputFile);
+
+    // for (std::string  surname: surnames)
+    //     std::cout << surname << '\n';
+
+    std::reverse(surnames.begin(),surnames.end());
+    for (VecStrings::iterator it = surnames.begin(); it < surnames.end(); it++)
+        std::cout <<  *it << '\n';
+
     inputFile.close();
     
     // other functions here
+    return 0;
+}
+
+VecStrings getSurvivorSurnames(std::istream& stream)
+{
+    const std::string targetColumnName = "Name"; 
+    std::string header;
+    std::getline(stream, header);
+
+    // get Name index
+    int targetIndex = 0;
+    std::stringstream ss(header);
+    while (!ss.eof())
+    {
+        std::string columnName;
+        std::getline(ss, columnName, ',');
+
+        if (columnName == targetColumnName)
+            break;
+
+        targetIndex++;
+    }
+
+    VecStrings surnames;    
+
+    while (!stream.eof())
+    {
+        std::string line;
+        std::getline(stream,line);
+
+        std::stringstream ssl(line);
+        std::string cell;
+        for (int i = 0; i < targetIndex; i++)
+            std::getline(ssl,cell,',');
+        
+        std::getline(ssl,cell,';');
+        
+        if (cell != "")
+            surnames.push_back(cell);
+    }   
+
+    return surnames;
 }
