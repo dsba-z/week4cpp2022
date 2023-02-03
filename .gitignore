@@ -33,3 +33,6 @@
 
 build*
 *.user
+code/src/titanic/main
+code/src/titanic/tempCodeRunnerFile.cpp
+.vscode/settings.json

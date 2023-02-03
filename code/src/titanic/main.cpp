@@ -91,15 +91,149 @@
 #include <random>
 #include <algorithm>
 
+typedef std::vector<std::string> VecString;
+// using VecString = std::vector<std::string>;
 
+VecString getSurvivorSurnames(std::istream& stream);
+void printVec(const VecString& surnames);
+double getFareForClass(std::istream& stream, short pclass);
+
+unsigned short getColumnIndex(const std::string& headerLine, 
+                                const std::string& targetColumnName);
 
 int main()
 {
-    const std::string INP_FILE_NAME = "../../data/titanic/titanic.csv";
+    const std::string INP_FILE_NAME = "../../../data/titanic/titanic.csv";
     std::ifstream inputFile;
     inputFile.open(INP_FILE_NAME);
-//    VecString surnames = getSurvivorSurnames(inputFile);
+    if (!inputFile.is_open())
+        std::cout << "Wrong path!\n"; 
+
+    // VecString surnames = getSurvivorSurnames(inputFile);
+    // printVec(surnames);
+
+    // std::string str = "qwerty";
+    // std::reverse(str.begin(),str.end());
+    // std::cout << str << '\n';
+
+    // std::sort(surnames.begin(),surnames.end());
+    // for (int i = 0; i < surnames.size(); i++)
+    //     std::cout << surnames[i] << '\n';
+
+    
+
+    // VecString::iterator it = surnames.begin();
+    // while (it != surnames.end())
+    //     std::cout << *(it++) << '\n';
+
+    // for (VecString::iterator it = surnames.begin(); it < surnames.end(); it++)
+    //     std::cout << *it << '\n';
+    // std::cout << *it  << '\t' << *(surnames.end() - 1)<< '\n';
+
+    double a = getFareForClass(inputFile, 3);
+
     inputFile.close();
     
     // other functions here
+}
+
+unsigned short getColumnIndex(const std::string& headerLine,const std::string& targetColumnName)
+{
+    std::stringstream ssh(headerLine);
+    
+    int targetIndex = 0;
+    while(!ssh.eof())
+    {
+        std::string column;
+        std::getline(ssh,column,',');
+
+        if (column == targetColumnName)
+            break;
+
+        targetIndex++;
+    }
+
+    return targetIndex;
+}
+
+
+VecString getSurvivorSurnames(std::istream& stream)
+{
+    VecString surnames;
+
+    const std::string targetColumnName = "Name";
+
+    std::string headerLine;
+    std::getline(stream,headerLine);
+
+    std::stringstream ssh(headerLine);
+    
+    int targetIndex = 0;
+    while(!ssh.eof())
+    {
+        std::string column;
+        std::getline(ssh,column,',');
+
+        if (column == targetColumnName)
+            break;
+
+        targetIndex++;
+    }
+
+    while (!stream.eof())
+    {
+        std::string line;
+        std::getline(stream,line);
+
+        if (line == "")
+            continue;
+
+        std::stringstream ssl(line);
+        std::string cell;
+        for (int i = 0; i < targetIndex; i++)
+            std::getline(ssl, cell, ',');
+        std::getline(ssl, cell, ';');
+
+        surnames.push_back(cell);
+    }
+       
+
+    return surnames;
+}
+
+void printVec(const VecString& surnames)
+{
+    for (std::string surname : surnames)
+        std::cout << surname << '\n';
+}
+
+
+
+double getFareForClass(std::istream& stream,short pclass)
+{
+    std::string headerLine;
+    std::getline(stream,headerLine);
+
+    unsigned short targetIndex = getColumnIndex(headerLine,"Pclass");
+    
+    
+     while (!stream.eof())
+    {
+        std::string line;
+        std::getline(stream,line);
+
+        if (line == "")
+            continue;
+
+        std::stringstream ssl(line);
+        std::string cell;
+        for (int i = 0; i <= targetIndex; i++)
+            std::getline(ssl, cell, ',');
+
+
+        std::cout << cell <<'\n';
+    }
+
+
+    return 0;
 }
