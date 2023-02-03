@@ -91,15 +91,81 @@
 #include <random>
 #include <algorithm>
 
+typedef std::vector<std::string>  VecString;
 
+VecString getSurvivorSurnames(std::istream& stream);
 
 int main()
 {
-    const std::string INP_FILE_NAME = "../../data/titanic/titanic.csv";
+    const std::string INP_FILE_NAME = "../../../data/titanic/titanic.csv";
     std::ifstream inputFile;
     inputFile.open(INP_FILE_NAME);
-//    VecString surnames = getSurvivorSurnames(inputFile);
+    if (!inputFile.is_open())
+        std::cout << "File not found!\n";
+    
+    VecString surnames = getSurvivorSurnames(inputFile);
+
+    std::string el = "qwertyui";
+    std::reverse(el.begin(),el.end());
+    std::cout << el << '\n';
+
+    // std::reverse(surnames.begin(),surnames.end());
+    // for (VecString::iterator it = surnames.begin(); it < surnames.end(); it++)
+    //     std::cout << *it << '\n'; 
+
+    // for (int i = 0; i < surnames.size(); i++)
+    //     std::cout << surnames[i] << '\n'; // .at(i)
+
+    // for (std::string surname: surnames)
+    //     std::cout << surname << '\n';
+
+
+
     inputFile.close();
     
     // other functions here
+}
+
+
+VecString getSurvivorSurnames(std::istream& stream)
+{
+    VecString surnames;
+    const std::string targetColumnName = "Name";
+    
+
+    std::string tableHeader;
+    std::getline(stream,tableHeader);
+
+
+    std::stringstream ssh(tableHeader);
+    int targetIndex = 0;
+    while (!ssh.eof())
+    {
+        std::string columnName;
+        std::getline(ssh,columnName,',');
+
+        if (targetColumnName == columnName)
+            break;
+
+        targetIndex++;
+    }
+
+    while (!stream.eof())
+    {
+        std::string line;
+        std::getline(stream, line);
+
+        if (line == "")
+            continue;
+
+        std::stringstream ssl(line);
+        std::string cell;
+        for (int i = 0; i < targetIndex; i++)
+            std::getline(ssl, cell,',');
+        std::getline(ssl, cell,';');
+
+        surnames.push_back(cell);
+    }    
+   
+   return surnames;
 }
