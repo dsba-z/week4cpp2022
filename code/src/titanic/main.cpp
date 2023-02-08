@@ -96,6 +96,8 @@ typedef std::vector<std::string> VecStrings;
 // using VecStrings = std::vector<std::string>;
 
 VecStrings getSurvivorSurnames(std::istream& stream);
+double getFareForClass(std::istream& stream, short pClass);
+short getColumnIndex(const std::string& header, const std::string& targetColumnName);
 
 
 int main()
@@ -105,14 +107,15 @@ int main()
     inputFile.open(INP_FILE_NAME);
 
 
-    VecStrings surnames = getSurvivorSurnames(inputFile);
+    // VecStrings surnames = getSurvivorSurnames(inputFile);
+    double res = getFareForClass(inputFile, 1);
 
     // for (std::string  surname: surnames)
     //     std::cout << surname << '\n';
 
-    std::reverse(surnames.begin(),surnames.end());
-    for (VecStrings::iterator it = surnames.begin(); it < surnames.end(); it++)
-        std::cout <<  *it << '\n';
+    // std::reverse(surnames.begin(),surnames.end());
+    // for (VecStrings::iterator it = surnames.begin(); it < surnames.end(); it++)
+    //     std::cout <<  *it << '\n';
 
     inputFile.close();
     
@@ -127,18 +130,7 @@ VecStrings getSurvivorSurnames(std::istream& stream)
     std::getline(stream, header);
 
     // get Name index
-    int targetIndex = 0;
-    std::stringstream ss(header);
-    while (!ss.eof())
-    {
-        std::string columnName;
-        std::getline(ss, columnName, ',');
-
-        if (columnName == targetColumnName)
-            break;
-
-        targetIndex++;
-    }
+    short targetIndex = getColumnIndex(header, targetColumnName);
 
     VecStrings surnames;    
 
@@ -159,4 +151,57 @@ VecStrings getSurvivorSurnames(std::istream& stream)
     }   
 
     return surnames;
+}
+
+short getColumnIndex(const std::string& header,const std::string&  targetColumnName)
+{
+    short targetIndex = 0;
+    std::stringstream ss(header);
+    while (!ss.eof())
+    {
+        std::string columnName;
+        std::getline(ss, columnName, ',');
+
+        if (columnName == targetColumnName)
+            break;
+
+        targetIndex++;
+    }
+
+    return targetIndex;
+}
+
+double getFareForClass(std::istream& stream, short pClass)
+{
+    std::string header;
+    std::getline(stream, header);
+
+    short indexPClass = getColumnIndex(header, "Pclass");
+    short indexFare = getColumnIndex(header, "Fare");
+
+    std::vector<double> faresByClass;
+
+    while (!stream.eof())
+    {
+        std::string line;
+        std::getline(stream,line);
+
+        std::stringstream ssl(line);
+        std::string cell;
+        for (int i = 0; i <= indexPClass; i++)
+            std::getline(ssl,cell,',');
+        
+        if (cell == "")
+            continue;
+
+        if (std::stoi(cell) == pClass)
+        {
+            for (int i = indexPClass + 1; i <= indexFare; i++)
+                std::getline(ssl,cell,',');
+
+            faresByClass.push_back(std::stod(cell));
+        }
+    }    
+
+    return 0;
 }
