@@ -235,21 +235,27 @@ void printVec(const std::vector<std::string> &fog_copy)
     }
 }
 
-void printVecIter(const VecString::const_iterator& beginIter, const VecString::const_iterator& endIter)
+
+
+// void doSomethingReadOnlyWithVector(const VecString& v)
+// {
+//     // do something
+//     printVecIter(v.begin(), v.end());
+// }
+
+
+
+double getMeanOfVector(const std::vector<double>::const_iterator& beginIter, const std::vector<double>::const_iterator& endIter)
 {
-    int count = 1;
-    for (VecString::const_iterator it = beginIter; it != endIter; ++it)
+    int count = 0;
+    double sum = 0;
+    for (std::vector<double>::const_iterator it = beginIter; it != endIter; ++it)
     {
-        std::cout << count << ") ";
-        std::cout << *it << std::endl;
+        sum += *it;
         ++count;
     }
-}
-
-void doSomethingReadOnlyWithVector(const VecString& v)
-{
-    // do something
-    printVecIter(v.begin(), v.end());
+    double mean = sum / count;
+    return mean;
 }
 
 int main()
@@ -258,21 +264,24 @@ int main()
     std::ifstream inputFile;
     inputFile.open(INP_FILE_NAME);
     VecString surnames = getSurvivorSurnames(inputFile);
-
-    int pClass = 1;
-    // double meanFare = getFareForClass(inputFile, pClass);
-
     inputFile.close();
     
+
+    std::vector<double> vd = {1.0, 2.5, 100.124124};
+    double mean = getMeanOfVector(vd.begin(), vd.end());
+
+    std::cout << mean << std::endl;
+
+
 
 /// 5) Reverse the vector containing names of surviving passengers using std::reverse.
 /// Sort this vector using std::sort
 /// Include library <algorithm> to access these functions.
 /// Use iterators.
     std::sort(surnames.begin(), surnames.end());
-    std::reverse(surnames.begin(), surnames.end());
+    // std::reverse(surnames.begin(), surnames.end());
 
-    printVecIter(surnames.begin(), surnames.end());
+    // printVecIter(surnames.begin(), surnames.end());
 
 
 /// 9) Using the sorted list of surnames find the person with surname "Mellors". Use the
@@ -280,8 +289,12 @@ int main()
 /// Print the value of this iterator and the next two values.
 /// 
     VecString::iterator it = std::find(surnames.begin(), surnames.end(), "Mellors");
-
+    VecString::iterator itMellors = it;
+    VecString::iterator itYoung = std::find(surnames.begin(), surnames.end(), "Young");
     // printVec(surnames);
+
+    VecString newVector;
+    newVector.resize(200);
 
 
     std::cout << *it << std::endl;
@@ -290,4 +303,20 @@ int main()
     ++it;
     std::cout << *it << std::endl;
     // other functions here
+
+    std::copy(itMellors, itYoung, newVector.begin());
+
+    for (VecString::const_iterator it = itMellors; it != itYoung; ++it)
+    {
+        newVector.push_back(*it);
+    }
+
+
+    printVec(newVector);
+/// PRACTICE
+/// 10) Find the person with surname "Young" following the example from task 9.
+/// Create a new vector and use functions std::find and std::copy to copy all surnames between
+/// "Mellors" and "Young" into it.
+
+
 }
