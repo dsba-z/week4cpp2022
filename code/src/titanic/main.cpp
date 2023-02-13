@@ -36,7 +36,7 @@
 ///     2) Name_2
 ///     ...
 ///     N) Name_n
-/// s
+/// 
 /// 3.1) (Optional homework) Try adding templates to the function, so it can print a vector
 /// of any printable type, not just a vector of strings.
 ///
@@ -95,6 +95,8 @@ typedef std::vector<std::string> VecString;
 
 using VecString = std::vector<std::string>;
 
+VecString getSurvivorSurnames(std::istream& in);
+
 std::istream& calcSumFromStream(std::istream& in, double& sum)
 {
 // floating point numbers from it
@@ -111,6 +113,56 @@ std::istream& calcSumFromStream(std::istream& in, double& sum)
     }
     return in;
 }
+
+
+
+// void print(const std::vector<std::string>& v)
+// {
+//     for (int i = 0; i < n; ++i)
+//     {
+
+//     }
+
+//     for (const std::string& name: v)
+//     {
+        
+//     }
+// }
+
+
+// double computeMeanIter(const std::vector<double>& fares, int pClass)
+// {
+//     // ....
+//     // computes average of fares
+// }
+
+
+void printVec(const VecString& collection)
+{
+    for (int i = 0; i < collection.size(); ++i)
+    {
+        std::cout << i+1 << ") " << collection[i] << std::endl;
+    }
+
+    // int count = 1;
+    // for (const std::string& item: collection)
+    // {
+    //     std::cout << count << ") " << item << std::endl;
+    //     ++count;
+    // }
+}
+
+
+void printVecIter(const VecString::iterator& beginIter, const VecString::iterator& endIter)
+{
+    int count = 1;
+    for (VecString::iterator it = beginIter; it != endIter; ++it)
+    {
+        std::cout << count << ") " << *it << std::endl;
+        ++count;
+    }
+}
+
 
 
 std::istream& readInputLine(std::istream& in, std::string& lastName, bool& survived)
@@ -149,6 +201,8 @@ std::istream& readInputLine(std::istream& in, std::string& lastName, bool& survi
     return in;
 }
 
+
+
 VecString getSurvivorSurnames(std::istream& in)
 {
     std::string buffer;
@@ -157,6 +211,9 @@ VecString getSurvivorSurnames(std::istream& in)
     bool survived;
     std::string lastName;
     VecString survivorNames;
+
+    std::vector<double> fares;
+
     while (readInputLine(in, lastName, survived))
     {
         if (survived)
@@ -164,8 +221,12 @@ VecString getSurvivorSurnames(std::istream& in)
             survivorNames.push_back(lastName);
         }
     }
+
+    // double mean = getAverageValueOfVector(fares.begin(), fares.end());
+
     return survivorNames;
 }
+
 
 
 int main()
@@ -175,6 +236,44 @@ int main()
     inputFile.open(INP_FILE_NAME);
     VecString surnames = getSurvivorSurnames(inputFile);
     inputFile.close();
-    
+
+
+    std::reverse(surnames.begin(), surnames.end());
+    // python_list.reverse()
+
+
+    printVecIter(surnames.begin(), surnames.end());
+
+    std::sort(surnames.begin(), surnames.end());
+    // std::reverse(surnames.begin(), surnames.end());
+
+    printVec(surnames);
+
+
+/// 9) Using the sorted list of surnames find the person with surname "Mellors". Use the
+/// function "std::find". The function will return an iterator.
+/// Print the value of this iterator and the next two values.
+    // Mellors
+    VecString::iterator it = std::find(surnames.begin(), surnames.end(), "Mellors");
+
+    std::cout << *it << std::endl;
+    ++it;
+    std::cout << *it << std::endl;
+    ++it;
+    std::cout << *it << std::endl;
+
+    //         from        to     write result here
+    // std::copy(itMellors, itYoung, newVector.begin());
+
+/// PRACTICE
+/// 10) Find the person with surname "Young" following the example from task 9.
+/// Create a new vector and use functions std::find and std::copy to copy all surnames between
+/// "Mellors" and "Young" into it.
+
+
+
+
+
+
     // other functions here
 }
