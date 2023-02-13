@@ -97,6 +97,12 @@
 
 using VecString = std::vector<std::string>;
 
+// void printVec(const VecString& collection)
+// {
+
+// }
+
+
 std::istream& calcSumFromStream(std::istream& in, double& sum)
 {
     std::string buffer;
@@ -115,6 +121,7 @@ std::istream& calcSumFromStream(std::istream& in, double& sum)
 std::istream& extractDataFromLine(std::istream& in, std::string& lastName, bool& survived)
 {
     std::string buffer;
+    // "154,0,3,van Billiard; Mr. Austin Blyler,male,40.5,0,2,A/5. 851,14.5,,S"
     std::getline(in, buffer);
     if (!in)
     {
@@ -125,26 +132,31 @@ std::istream& extractDataFromLine(std::istream& in, std::string& lastName, bool&
 
     // PassengerId
     std::getline(sstr, buffer, ',');
+    // // PassengerId
+    // std::getline(sstr, buffer, ',');
+    // // PassengerId
+    // std::getline(sstr, buffer, ',');
+    // // pclass = buffer;
+
+    // // PassengerId
+    // std::getline(sstr, buffer, ',');
+    // // PassengerId
+    // std::getline(sstr, buffer, ',');
+    // // PassengerId
+    // std::getline(sstr, buffer, ',');
+    // // PassengerId
+    // std::getline(sstr, buffer, ',');
+    // // PassengerId
+    // std::getline(sstr, buffer, ',');
+    // // PassengerId
+    // std::getline(sstr, buffer, ',');
+    // fare = buffer;
 
     // Survived
     std::getline(sstr, buffer, ',');
     survived = bool(std::stoi(buffer));
     // survived = buffer == "1";
 
-    // if (buffer == "1")
-    // {
-    //     survived = true;
-    // }
-    // else if (buffer == "0")
-    // {
-    //     survived = false;
-    // }
-    // else
-    // {
-    //     // error
-    //     // exception
-    //     // return error
-    // }
 
 
     // Pclass
@@ -164,7 +176,23 @@ std::istream& extractDataFromLine(std::istream& in, std::string& lastName, bool&
     //Age
     return in;
 }
+///
+/// PRACTICE
+/// 4) Create a function called getFareForClass that takes an input stream object
+/// istream& and an integer number representing class (PClass, 1 to 3), reads the stream 
+/// until the end and returns the mean fare value of people of the given class.
+/// The function returns a single value of type double -- the mean fair value.
+/// Use at least two intermediate functions in problem 4.
+/// Proposed intermediate functions:
+/// 4.1) Extract needed data from a single line (PClass and Fare)
+/// 4.2) Compute the mean (average) value of a given vector
 
+// getFareForClass 
+// input:
+// stream object istream&
+//  integer number representing class
+// output:
+//   returns the mean fare value
 VecString getSurvivorSurnames(std::istream& in)
 {
     std::string lastName;
@@ -182,13 +210,84 @@ VecString getSurvivorSurnames(std::istream& in)
 }
 
 
+VecString getSurvivorSurnames(std::istream& in, int pClass)
+{
+    std::string lastName;
+    bool survived;
+    std::vector<std::string> surnames;
+    std::getline(in, lastName);
+    while(extractDataFromLine(in, lastName, survived))
+    {
+        if (survived)
+        {
+            surnames.push_back(lastName);
+        }
+    }
+    return surnames;
+}
+
+
+void printVec(const std::vector<std::string> &fog_copy)
+{
+    for (int i = 0; i < fog_copy.size(); i++)
+    {
+        std::cout << i + 1 << ") " << fog_copy[i] << std::endl;
+    }
+}
+
+void printVecIter(const VecString::const_iterator& beginIter, const VecString::const_iterator& endIter)
+{
+    int count = 1;
+    for (VecString::const_iterator it = beginIter; it != endIter; ++it)
+    {
+        std::cout << count << ") ";
+        std::cout << *it << std::endl;
+        ++count;
+    }
+}
+
+void doSomethingReadOnlyWithVector(const VecString& v)
+{
+    // do something
+    printVecIter(v.begin(), v.end());
+}
+
 int main()
 {
     const std::string INP_FILE_NAME = "../data/titanic/titanic.csv";
     std::ifstream inputFile;
     inputFile.open(INP_FILE_NAME);
     VecString surnames = getSurvivorSurnames(inputFile);
+
+    int pClass = 1;
+    // double meanFare = getFareForClass(inputFile, pClass);
+
     inputFile.close();
     
+
+/// 5) Reverse the vector containing names of surviving passengers using std::reverse.
+/// Sort this vector using std::sort
+/// Include library <algorithm> to access these functions.
+/// Use iterators.
+    std::sort(surnames.begin(), surnames.end());
+    std::reverse(surnames.begin(), surnames.end());
+
+    printVecIter(surnames.begin(), surnames.end());
+
+
+/// 9) Using the sorted list of surnames find the person with surname "Mellors". Use the
+/// function "std::find". The function will return an iterator.
+/// Print the value of this iterator and the next two values.
+/// 
+    VecString::iterator it = std::find(surnames.begin(), surnames.end(), "Mellors");
+
+    // printVec(surnames);
+
+
+    std::cout << *it << std::endl;
+    ++it;
+    std::cout << *it << std::endl;
+    ++it;
+    std::cout << *it << std::endl;
     // other functions here
 }
